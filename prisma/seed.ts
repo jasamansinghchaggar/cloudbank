@@ -14,7 +14,7 @@ async function main() {
     create: {
       username: "admin",
       password: adminPassword,
-      role: "superadmin",
+      role: "SUPERADMIN",
     },
   });
 
@@ -44,7 +44,10 @@ async function main() {
   });
 
   const existingSeedTransfer = await prisma.transaction.findFirst({
-    where: { senderAccount: alice.accountNumber, receiverAccount: bob.accountNumber },
+    where: {
+      senderAccount: alice.accountNumber,
+      receiverAccount: bob.accountNumber,
+    },
   });
   if (!existingSeedTransfer) {
     const seedAmount = 150;
@@ -59,6 +62,7 @@ async function main() {
       }),
       prisma.transaction.create({
         data: {
+          reference: `SEED-${alice.accountNumber}-${bob.accountNumber}`,
           senderAccount: alice.accountNumber,
           receiverAccount: bob.accountNumber,
           amount: seedAmount,
@@ -70,8 +74,12 @@ async function main() {
 
   console.log("Seed complete:");
   console.log("  Admin      -> username: admin / password: admin123");
-  console.log("  Customer 1 -> email: alice@cloudbank.test / password: password123");
-  console.log("  Customer 2 -> email: bob@cloudbank.test / password: password123");
+  console.log(
+    "  Customer 1 -> email: alice@cloudbank.test / password: password123",
+  );
+  console.log(
+    "  Customer 2 -> email: bob@cloudbank.test / password: password123",
+  );
 }
 
 main()
