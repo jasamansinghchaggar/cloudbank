@@ -1,0 +1,58 @@
+// CloudBank Prisma schema
+// See PRD.txt "Database Design" for the source model definitions.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model Customer {
+  id            Int      @id @default(autoincrement()) @map("customer_id")
+  name          String   @db.VarChar(255)
+  email         String   @unique @db.VarChar(255)
+  password      String   @db.VarChar(255)
+  accountNumber String   @unique @map("account_number") @db.VarChar(20)
+  balance       Decimal  @default(0) @db.Decimal(15, 2)
+  isBlocked     Boolean  @default(false) @map("is_blocked")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  sentTransactions     Transaction[] @relation("SenderTransactions")
+  receivedTransactions Transaction[] @relation("ReceiverTransactions")
+
+  @@map("customers")
+}
+
+model Transaction {
+  id             Int               @id @default(autoincrement()) @map("transaction_id")
+  senderAccount  String            @map("sender_account") @db.VarChar(20)
+  receiverAccount String           @map("receiver_account") @db.VarChar(20)
+  amount         Decimal           @db.Decimal(15, 2)
+  status         TransactionStatus @default(PENDING)
+  timestamp      DateTime          @default(now())
+
+  sender   Customer @relation("SenderTransactions", fields: [senderAccount], references: [accountNumber])
+  receiver Customer @relation("ReceiverTransactions", fields: [receiverAccount], references: [accountNumber])
+
+  @@index([senderAccount])
+  @@index([receiverAccount])
+  @@map("transactions")
+}
+
+enum TransactionStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+model Admin {
+  id       Int    @id @default(autoincrement()) @map("admin_id")
+  username String @unique @db.VarChar(100)
+  password String @db.VarChar(255)
+  role     String @default("admin") @db.VarChar(50)
+
+  @@map("admins")
+}
