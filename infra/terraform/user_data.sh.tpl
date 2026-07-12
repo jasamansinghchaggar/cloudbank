@@ -20,7 +20,7 @@ cd "$APP_DIR"
 
 # Create environment file
 cat > .env <<EOF
-DATABASE_URL="${database_url}"
+DATABASE_URL="${database_url}?allowPublicKeyRetrieval=true"
 JWT_SECRET="${jwt_secret}"
 NODE_ENV=production
 PORT=3000

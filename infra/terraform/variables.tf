@@ -132,3 +132,8 @@ variable "jwt_secret" {
   sensitive   = true
   default     = "change-me-in-production"
 }
+
+variable "certificate_arn" {
+  description = "ACM certificate ARN"
+  type        = string
+}
