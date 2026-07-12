@@ -1,7 +1,6 @@
 # CloudBank
 
-A secure, highly available banking portal, built as described in `PRD.txt`: a
-Next.js application backed by MySQL, deployed on AWS behind an Application
+A secure, highly available banking portal, a Next.js application backed by MySQL, deployed on AWS behind an Application
 Load Balancer and Auto Scaling Group.
 
 ## Stack
@@ -9,7 +8,6 @@ Load Balancer and Auto Scaling Group.
 - Next.js 15 (App Router) + TypeScript + Tailwind CSS
 - Prisma 7 (MySQL, via the `@prisma/adapter-mariadb` driver adapter)
 - JWT (`jose`) + bcrypt for authentication
-- Terraform for AWS infrastructure (`infra/terraform/`)
 
 ## Local development
 
@@ -62,33 +60,6 @@ prisma/
 
 The dashboard shows the serving instance's hostname and PID
 (`src/app/dashboard/page.tsx`, backed by `os.hostname()`). Once deployed
-behind the ALB + Auto Scaling Group in `infra/terraform/`, refreshing the
+behind the ALB + Auto Scaling Group, refreshing the
 page after logging in shows requests landing on different EC2 instances;
 terminating one instance shows the ASG replace it while the app stays up.
-
-## AWS deployment (infrastructure as code)
-
-Terraform config lives in `infra/terraform/` and provisions the architecture
-from `PRD.txt`: VPC, public/private/db subnets across 2 AZs, IGW, a single
-NAT Gateway, security groups, an ALB + target group, a launch template +
-Auto Scaling Group for the app, an RDS MySQL instance, and an optional
-Route 53 record.
-
-**Nothing here has been applied — these are plans only.** To actually
-provision AWS resources (which will incur cost and requires your own AWS
-credentials):
-
-```bash
-cd infra/terraform
-cp terraform.tfvars.example terraform.tfvars   # fill in db_password, jwt_secret, admin_cidr, app_repo_url
-terraform init
-terraform plan
-terraform apply
-```
-
-The EC2 launch template's user data (`user_data.sh.tpl`) clones
-`app_repo_url` at boot, installs Node, runs `prisma migrate deploy`, builds,
-and starts the app with PM2 — so push this repo to a Git remote and set
-`app_repo_url` accordingly before applying.
-
-Tear down with `terraform destroy` when done to avoid ongoing charges.
