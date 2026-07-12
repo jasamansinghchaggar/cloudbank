@@ -62,7 +62,6 @@ async function main() {
       }),
       prisma.transaction.create({
         data: {
-          reference: `SEED-${alice.accountNumber}-${bob.accountNumber}`,
           senderAccount: alice.accountNumber,
           receiverAccount: bob.accountNumber,
           amount: seedAmount,

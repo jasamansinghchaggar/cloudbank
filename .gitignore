@@ -50,3 +50,6 @@ infra/terraform/*.tfstate.*
 infra/terraform/terraform.tfvars
 infra/terraform/*.tfplan
 infra/terraform/crash.log
+
+# claude
+.claude
