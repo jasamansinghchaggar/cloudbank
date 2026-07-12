@@ -52,7 +52,7 @@ variable "admin_cidr" {
 variable "instance_type" {
   description = "EC2 instance type for the Next.js app servers"
   type        = string
-  default     = "t3.micro"
+  default     = "t3.small"
 }
 
 variable "asg_min_size" {
