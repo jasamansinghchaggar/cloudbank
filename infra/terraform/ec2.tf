@@ -41,6 +41,16 @@ resource "aws_launch_template" "app" {
   instance_type = var.instance_type
   key_name      = var.key_pair_name
 
+  block_device_mappings {
+  device_name = "/dev/xvda"
+
+    ebs {
+      volume_size           = 20
+      volume_type           = "gp3"
+      delete_on_termination = true
+    }
+  }
+
   iam_instance_profile {
     name = aws_iam_instance_profile.ec2.name
   }
@@ -74,7 +84,7 @@ resource "aws_autoscaling_group" "app" {
   vpc_zone_identifier = aws_subnet.app[*].id
   target_group_arns   = [aws_lb_target_group.app.arn]
   health_check_type   = "ELB"
-  health_check_grace_period = 90
+  health_check_grace_period = 300
 
   min_size         = var.asg_min_size
   max_size         = var.asg_max_size
