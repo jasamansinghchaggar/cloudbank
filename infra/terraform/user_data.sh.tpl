@@ -43,6 +43,9 @@ done
 # Run database migrations
 npx prisma migrate deploy
 
+# Seed the database
+npm run db:seed
+
 # Build the application
 npm run build
 
