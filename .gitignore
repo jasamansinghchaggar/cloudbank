@@ -44,12 +44,7 @@ next-env.d.ts
 /src/generated/prisma
 
 # terraform
-infra/terraform/.terraform/
-infra/terraform/*.tfstate
-infra/terraform/*.tfstate.*
-infra/terraform/terraform.tfvars
-infra/terraform/*.tfplan
-infra/terraform/crash.log
+infra/
 
 # claude
-.claude
+.claude/
